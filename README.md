@@ -14,7 +14,11 @@ Using *Second-Degree Polynomial Regression*, I modeled the engagement trends to 
 - *Matplotlib:* Advanced data visualization.
 - *Scikit-Learn / NumPy Polyfit:* Predictive modeling.
 - *YouTube API:* Data extraction.
+<img width="1488" height="709" alt="Captura de pantalla 2026-02-28 123640" src="https://github.com/user-attachments/assets/44dcf503-12f0-4f1b-a76f-62b653f32029" />
+  
+  
 ## Files  
+ [PP KRIT Analysis of impact digital (2020-2026) and 2027 fore.pdf](https://github.com/user-attachments/files/25640856/PP.KRIT.Analysis.of.impact.digital.2020-2026.and.2027.fore.pdf)
 - [stats_list.xlsx](https://github.com/user-attachments/files/25640826/stats_list.xlsx)
 - [stats_list_nadao.xlsx](https://github.com/user-attachments/files/25640828/stats_list_nadao.xlsx)
 
