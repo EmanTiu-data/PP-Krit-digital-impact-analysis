@@ -1,0 +1,64 @@
+import pandas as pd
+from googleapiclient.discovery import build
+
+API_KEY = 'AIzaSyDc8b5hJrpoSvoBA2G1lhvQLBnO0c6YLzQ'
+Youtube = build('youtube', 'v3', developerKey=API_KEY)
+def get_channel_video(channel_id):
+    call = Youtube.channels().list(
+        part = 'contentDetails',
+        id = channel_id
+    )
+    response = call.execute()
+    uploads = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
+    videos = []
+    videos_teaser = []
+    next_page = None
+    while True:
+        PL_call = Youtube.playlistItems().list(
+            part= 'contentDetails, snippet',
+            playlistId = uploads,
+            maxResults = 10,
+            pageToken = next_page
+        )
+        pl_response = PL_call.execute()
+        for item in pl_response['items']:
+            titulo = item['snippet']['title']
+            if 'krit' in titulo.lower() or 'pp krit' in titulo.lower():
+                if 'Teaser' in item['snippet']['title']:
+                  videos_teaser.append(titulo)
+                else:
+                  videos.append({
+                    'titulo': titulo, 
+                    'videoid': item['contentDetails']['videoId']
+                })  
+        next_page = pl_response.get('nextPageToken')
+        if not next_page:
+           break
+    df = pd.DataFrame(videos)
+    return df
+
+def get_video_stats(videos_ids):
+    stats_list = []
+    for i in range(0, len(videos_ids), 50):
+        batch = videos_ids[i: i+50]
+        requests = Youtube.videos().list(
+            part = 'statistics, snippet',
+            id = ','.join(batch)
+            )
+        response = requests.execute()
+        for item in response['items']:
+            stats_list.append({
+                'titulo': item['snippet']['title'],
+                'fecha': item['snippet']['publishedAt'],
+                'vistas': int(item['statistics'].get('viewCount', 0)),
+                'likes': int(item['statistics'].get('likeCount', 0)),
+                'comentarios': int(item['statistics'].get('commentCount', 0))
+            })
+    df_stats = pd.DataFrame(stats_list)
+    df_stats.to_excel('stats_list_nadao.xlsx', index=False)
+    return df_stats
+    
+channel_id = 'UCqXqKDMWbVTT4QgBQT-qDpQ'
+channel_id2 = 'UCuWZ-DvMyZ_CgSoRvbtlH6g'
+Resultado = get_channel_video(channel_id)
+estadisticas = get_video_stats(Resultado['videoid'])
